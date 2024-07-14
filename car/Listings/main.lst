@@ -1,95 +1,45 @@
-C51 COMPILER V9.54   MAIN                                                                  07/07/2024 20:55:00 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  07/14/2024 21:06:16 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: D:\STM32\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
-                    -s\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+COMPILER INVOKED BY: D:\STM32\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(D:\Keil_v5\C51\INC) DEBUG O
+                    -BJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
 
-   1          /**
-   2           * @file main.c
-   3           * @author Jachyn
-   4           * @brief  jachyn's diy car
-   5           * @version 0.1
-   6           * @date 2023-07-22
-   7           *
-   8           * @copyright Copyright (c) 2023
-   9           *
-  10           */
-  11          
-  12          #include <REGX52.H>
-  13          
-  14          /**
-  15           * @brief 直行
-  16           *
+   1          #include <REGX52.H> //包含51头文件
+   2          #include "uart.h" //包含串口函数头文件
+   3          
+   4          void main() // 定义主函数
+   5          {
+   6   1      
+   7   1        UART_Init(); // 串口函数初始化
+   8   1        while (1)
+   9   1        {
+  10   2        }
+  11   1      }
+  12          
+  13          /**
+  14           *@breaf 串口中断服务子函数
+  15           *@param
+  16           *@retval
   17           */
-  18          void go()
+  18          void uart_routine() interrupt 4 // 当数据传递给单片机后，我们需要进入中断，要不然�
+             -�们无法知道，数据是否由串口助手传递给单片机
   19          {
-  20   1        P0_0 = 1;
-  21   1        P0_1 = 0;
-  22   1        P0_2 = 1;
-  23   1        P0_3 = 0;
-  24   1      }
-  25          
-  26          /**
-  27           * @brief 后退
-  28           *
-  29           */
-  30          void back()
-  31          {
-  32   1        P0_0 = 0;
-  33   1        P0_1 = 1;
-  34   1        P0_2 = 0;
-  35   1        P0_3 = 1;
-  36   1      }
-  37          
-  38          /**
-  39           * @brief 左转
-  40           *
-  41           */
-  42          void go_left()
-  43          {
-  44   1        P0_0 = 0;
-  45   1        P0_1 = 0;
-  46   1        P0_2 = 1;
-  47   1        P0_3 = 0;
-  48   1      }
-  49          
-  50          /**
-  51           * @brief 右转
-  52           *
-  53           */
-  54          void go_right()
-C51 COMPILER V9.54   MAIN                                                                  07/07/2024 20:55:00 PAGE 2   
-
-  55          {
-  56   1        P0_0 = 1;
-  57   1        P0_1 = 0;
-  58   1        P0_2 = 0;
-  59   1        P0_3 = 0;
-  60   1      }
-  61          
-  62          /**
-  63           * @brief 主函数
-  64           *
-  65           */
-  66          void main()
-  67          {
-  68   1        //测试
-  69   1        while (1)
-  70   1        {
-  71   2          go();
-  72   2          // go_left();
-  73   2          go_right();
-  74   2          // go_back();
-  75   2        }
-  76   1      }
+  20   1        if (RI == 1) // 如果接收数据标志位置1（即电脑发送的数据已经被单片机全部接收�
+             -��；防止由单片机发送数据完成也会进入中断。因为收发用的是同一个中断；
+  21   1        {
+  22   2          P0 = ~SBUF;      // 令接收的数据为点亮LED的模块
+  23   2          UART_SendByte(SBUF); // 将接收的数据又发送给电脑助手
+  24   2          RI = 0;
+  25   2        }
+  26   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     44    ----
+   CODE SIZE        =     76    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

@@ -1,0 +1,5 @@
+Build target 'Target 1'
+compiling main.c...
+main.c(36): warning C206: '_nop_': missing function-prototype
+main.c(36): error C264: intrinsic '_nop_': declaration/activation error
+Target not created.
